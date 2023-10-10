@@ -3,11 +3,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     const url = 'http://localhost:8000/api/locations/';
 
     const response = await fetch(url);
-    console.log(url)
     if (response.ok) {
         const data = await response.json();
-        console.log(data)
-
         const selectTag = document.getElementById("location");
         for (let location of data.locations) {
             const option = document.createElement('option');
@@ -36,6 +33,5 @@ window.addEventListener('DOMContentLoaded', async () => {
         }
     })
     } else {
-
     }
 })
