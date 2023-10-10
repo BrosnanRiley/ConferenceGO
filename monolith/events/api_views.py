@@ -13,6 +13,7 @@ class LocationListEncoder(ModelEncoder):
     properties = [
         "name",
         "picture_url",
+        "id",
     ]
 
 class LocationDetailEncoder(ModelEncoder):
@@ -32,7 +33,7 @@ class LocationDetailEncoder(ModelEncoder):
 
 class ConferenceListEncoder(ModelEncoder):
     model = Conference
-    properties = ["name"]
+    properties = ["name", "id"]
 
 
 class ConferenceDetailEncoder(ModelEncoder):
@@ -268,3 +269,19 @@ def api_list_states(request):
         state_list.append(dict)
 
     return JsonResponse({"states": state_list})
+
+
+# @require_http_methods(["GET"])
+# def api_list_conferences(request):
+#     conferences = Conference.objects.order_by('location')
+#     conference_list = []
+#     for conference in conferences:
+#         dict - {
+#             "name" : conference.name,
+#             "starts" : conference.starts,
+#             "ends" : conference.ends,
+#             "description" : conference.description,
+#             "max_presentations" : conference.max_presentations,
+#             "max_attendess" : conference.max_attendees,
+#         }
+#     return JsonResponse({"conferences": conference_list})
