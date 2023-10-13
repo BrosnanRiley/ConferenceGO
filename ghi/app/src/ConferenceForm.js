@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 function ConferenceForm(props) {
   const [name, setName] = useState("");
   const [locations, setLocation] = useState([]);
-  const [location, setConferenceLocation] = useState('');
-  const [starts, setStarts] = useState('');
-  const [ends, setEnds] = useState('');
-  const [description, setDescription] = useState('');
-  const [maxPresentations, setMaxPresentations] = useState('');
-  const [maxAttendees, setMaxAttendees] = useState('');
+  const [location, setConferenceLocation] = useState("");
+  const [starts, setStarts] = useState("");
+  const [ends, setEnds] = useState("");
+  const [description, setDescription] = useState("");
+  const [maxPresentations, setMaxPresentations] = useState("");
+  const [maxAttendees, setMaxAttendees] = useState("");
 
   const handleNameChange = (event) => {
     const value = event.target.value;
@@ -32,18 +32,18 @@ function ConferenceForm(props) {
 
   const handleDescriptionChange = (event) => {
     const value = event.target.value;
-    setDescription(value)
+    setDescription(value);
   };
 
   const handleMaxPresentationsChange = (event) => {
     const value = event.target.value;
-    setMaxPresentations(value)
+    setMaxPresentations(value);
   };
 
   const handleMaxAttendeesChange = (event) => {
     const value = event.target.value;
-    setMaxAttendees(value)
-  }
+    setMaxAttendees(value);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -104,7 +104,7 @@ function ConferenceForm(props) {
             onChange={handleNameChange}
             placeholder="Name"
             required
-            type="text"
+            type="name"
             name="name"
             id="name"
             className="form-control"
@@ -133,7 +133,7 @@ function ConferenceForm(props) {
             value={ends}
           />
 
-        <input
+          <input
             onChange={handleDescriptionChange}
             placeholder="description"
             required
@@ -144,7 +144,7 @@ function ConferenceForm(props) {
             value={description}
           />
 
-        <input
+          <input
             onChange={handleMaxPresentationsChange}
             placeholder="max_presentations"
             required
@@ -154,7 +154,7 @@ function ConferenceForm(props) {
             className="form-control"
             value={maxPresentations}
           />
-        <input
+          <input
             onChange={handleMaxAttendeesChange}
             placeholder="max_attendees"
             required
@@ -167,8 +167,8 @@ function ConferenceForm(props) {
 
           <select
             required
-            name="conference"
-            id="conference"
+            name="location"
+            id="location"
             className="form-select"
             onChange={handleConferenceLocationChange}
             value={location}
