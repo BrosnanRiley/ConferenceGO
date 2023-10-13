@@ -1,191 +1,136 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-function ConferenceForm(props) {
-  const [name, setName] = useState("");
-  const [locations, setLocation] = useState([]);
-  const [location, setConferenceLocation] = useState("");
-  const [starts, setStarts] = useState("");
-  const [ends, setEnds] = useState("");
-  const [description, setDescription] = useState("");
-  const [maxPresentations, setMaxPresentations] = useState("");
-  const [maxAttendees, setMaxAttendees] = useState("");
+function ConferenceForm() {
+  const [locations, setLocations] = useState([])
 
-  const handleNameChange = (event) => {
-    const value = event.target.value;
-    setName(value);
-  };
+  //Notice that we can condense all formData
+  //into one state object
+  const [formData, setFormData] = useState({
+    name: '',
+    starts: '',
+    ends: '',
+    description: '',
+    max_presentations: '',
+    max_attendees: '',
+    location: '',
+  })
 
-  const handleConferenceLocationChange = (event) => {
-    const value = event.target.value;
-    setConferenceLocation(value);
-  };
-
-  const handleStartsChange = (event) => {
-    const value = event.target.value;
-    setStarts(value);
-  };
-
-  const handleEndsChange = (event) => {
-    const value = event.target.value;
-    setEnds(value);
-  };
-
-  const handleDescriptionChange = (event) => {
-    const value = event.target.value;
-    setDescription(value);
-  };
-
-  const handleMaxPresentationsChange = (event) => {
-    const value = event.target.value;
-    setMaxPresentations(value);
-  };
-
-  const handleMaxAttendeesChange = (event) => {
-    const value = event.target.value;
-    setMaxAttendees(value);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const data = {};
-    data.name = name;
-    data.starts = starts;
-    data.ends = ends;
-    data.description = description;
-    data.max_presentations = maxPresentations;
-    data.max_attendees = maxAttendees;
-    data.location = location;
-    console.log(data);
-
-    const conferenceUrl = "http://localhost:8000/api/conferences/";
-    const fetchConfig = {
-      method: "post",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    const response = await fetch(conferenceUrl, fetchConfig);
-    if (response.ok) {
-      const newConference = await response.json();
-      console.log(newConference);
-
-      setName("");
-      setConferenceLocation("");
-      setStarts("");
-      setEnds("");
-      setDescription("");
-      setMaxPresentations("");
-      setMaxAttendees("");
-    }
-  };
   const fetchData = async () => {
-    const url = "http://localhost:8000/api/locations/";
+    const url = 'http://localhost:8000/api/locations/';
     const response = await fetch(url);
-
     if (response.ok) {
       const data = await response.json();
-      setLocation(data.locations);
+      setLocations(data.locations);
     }
-  };
+  }
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const url = 'http://localhost:8000/api/conferences/';
+
+    const fetchConfig = {
+      method: "post",
+      //Because we are using one formData state object,
+      //we can now pass it directly into our request!
+      body: JSON.stringify(formData),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const response = await fetch(url, fetchConfig);
+
+    if (response.ok) {
+      //The single formData object
+      //also allows for easier clearing of data
+      setFormData({
+        name: '',
+        starts: '',
+        ends: '',
+        description: '',
+        max_presentations: '',
+        max_attendees: '',
+        location: '',
+      });
+    }
+  }
+
+  //Notice that we can also replace multiple form change
+  //eventListener functions with one
+  const handleFormChange = (e) => {
+    const value = e.target.value;
+    const inputName = e.target.name;
+
+    //We can condense our form data event handling
+    //into on function by using the input name to update it
+
+    setFormData({
+      //Previous form data is spread (i.e. copied) into our new state object
+      ...formData,
+
+      //On top of the that data, we add the currently engaged input key and value
+      [inputName]: value
+    });
+  }
+
   return (
-    <>
-      <div className="shadow p-4 mt-4">
-        <h1>Create a new conference</h1>
-        <form onSubmit={handleSubmit} id="create-conference-form">
-          <input
-            onChange={handleNameChange}
-            placeholder="Name"
-            required
-            type="name"
-            name="name"
-            id="name"
-            className="form-control"
-            value={name}
-          />
+    <div className="row">
+      <div className="offset-3 col-6">
+        <div className="shadow p-4 mt-4">
+          <h1>Create a new conference</h1>
+          <form onSubmit={handleSubmit} id="create-conference-form">
 
-          <input
-            onChange={handleStartsChange}
-            placeholder="starts"
-            required
-            type="date"
-            name="starts"
-            id="starts"
-            className="form-control"
-            value={starts}
-          />
+            <div className="form-floating mb-3">
+              <input onChange={handleFormChange} placeholder="Name" required type="text" name="name" id="name" className="form-control" />
+              <label htmlFor="name">Name</label>
+            </div>
 
-          <input
-            onChange={handleEndsChange}
-            placeholder="ends"
-            required
-            type="date"
-            name="ends"
-            id="ends"
-            className="form-control"
-            value={ends}
-          />
+            <div className="form-floating mb-3">
+              <input onChange={handleFormChange} placeholder="Starts" required type="date" name="starts" id="starts" className="form-control" />
+              <label htmlFor="starts">Starts</label>
+            </div>
 
-          <input
-            onChange={handleDescriptionChange}
-            placeholder="description"
-            required
-            type="textarea"
-            name="description"
-            id="description"
-            className="form-control"
-            value={description}
-          />
+            <div className="form-floating mb-3">
+              <input onChange={handleFormChange} placeholder="Ends" required type="date" name="ends" id="ends" className="form-control" />
+              <label htmlFor="ends">Ends</label>
+            </div>
 
-          <input
-            onChange={handleMaxPresentationsChange}
-            placeholder="max_presentations"
-            required
-            type="number"
-            name="max_presentations"
-            id="max_presentations"
-            className="form-control"
-            value={maxPresentations}
-          />
-          <input
-            onChange={handleMaxAttendeesChange}
-            placeholder="max_attendees"
-            required
-            type="number"
-            name="max_attendees"
-            id="Max_attendees"
-            className="form-control"
-            value={maxAttendees}
-          />
+            <div className="mb-3">
+              <label htmlFor="description">Description</label>
+              <textarea onChange={handleFormChange} className="form-control" id="description" rows="3" name="description" className="form-control"></textarea>
+            </div>
 
-          <select
-            required
-            name="location"
-            id="location"
-            className="form-select"
-            onChange={handleConferenceLocationChange}
-            value={location}
-          >
-            <option value="">Select location</option>
-            {locations.map((location) => {
-              return (
-                <option value={location.id} key={location.id}>
-                  {location.name}
-                </option>
-              );
-            })}
-          </select>
-          <button className="btn btn-primary">Create</button>
-        </form>
+            <div className="form-floating mb-3">
+              <input onChange={handleFormChange} placeholder="Maximum presentations" required type="number" name="max_presentations" id="max_presentations" className="form-control" />
+              <label htmlFor="max_presentations">Maximum presentations</label>
+            </div>
+
+            <div className="form-floating mb-3">
+              <input onChange={handleFormChange} placeholder="Maximum attendees" required type="number" name="max_attendees" id="max_attendees" className="form-control" />
+              <label htmlFor="max_attendees">Maximum attendees</label>
+            </div>
+
+            <div className="mb-3">
+              <select onChange={handleFormChange} required name="location" id="location" className="form-select">
+                <option value="">Choose a location</option>
+                {locations.map(location => {
+                  return (
+                    <option key={location.id} value={location.id}>{location.name}</option>
+                  )
+                })}
+              </select>
+            </div>
+            <button className="btn btn-primary">Create</button>
+          </form>
+        </div>
       </div>
-    </>
-  );
+    </div>
+  )
 }
+
 export default ConferenceForm;
